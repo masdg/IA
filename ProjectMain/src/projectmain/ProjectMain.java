@@ -26,7 +26,12 @@ public class ProjectMain extends Application {
     double xSize = 1000;
     double ySize = 1000;
     double scale = 1;
-    public class shape {
+    public class Shape {
+        public Shape(){
+            
+        }
+    }
+    public class Triangle extends Shape{
         private double ax=0;
         private double ay=0;
         private double bx=0;
@@ -36,8 +41,7 @@ public class ProjectMain extends Application {
         private Line line1 = new Line();
         private Line line2 = new Line();
         private Line line3 = new Line();
-        public shape(){
-            
+        public Triangle(){
         }
         public void tri(Group g, double aax, double aay, double bbx, double bby, double ccx, double ccy, double scalebale){
             ax = aax;
@@ -77,7 +81,7 @@ public class ProjectMain extends Application {
             line3.setEndY(ay*scalebale+ySize/2);
         }
     }
-    public shape baboon;
+    public Triangle baboon;
     @Override
     public void start(Stage primaryStage) {
         Button zoomIn = new Button("+"); //init
@@ -88,7 +92,7 @@ public class ProjectMain extends Application {
         zoomOut.setOnAction((ActionEvent e) -> {
             scale+=0.05;
         });
-        shape baboon = new shape();
+        Triangle baboon = new Triangle();
         scale = 1;
         primaryStage.setTitle("Main");
         Group r = new Group();
