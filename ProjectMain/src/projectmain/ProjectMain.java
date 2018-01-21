@@ -17,6 +17,9 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.stage.Stage;
+import javafx.geometry.Point2D;
+import java.awt.geom.*;
+import java.awt.event.*;
 
 /**
  *
@@ -34,6 +37,42 @@ public class ProjectMain extends Application {
         public abstract void rotate(double x);
         public abstract void color(Color c);
         public abstract void refresh();
+    }
+    public class Quad extends Shape{
+        private Double[] pointX = new Double[4];
+        private Double[] pointY = new Double[4];
+        Line line1 = new Line();
+        Line line2 = new Line();
+        Line line3 = new Line();
+        Line line4 = new Line();
+        public Quad(Group g, Double length, Double height, Double centerX, Double centerY){
+            line1.setEndX(centerX+length/2);
+            line1.setStartX(centerX-length/2);
+            line2.setStartX(centerX+length/2);
+            line2.setEndX(centerX+length/2);
+            line3.setStartX(centerX+length/2);
+            line3.setEndX(centerX-length/2);
+            line4.setStartX(centerX-length/2);
+            line4.setEndX(centerX-length/2);
+            line1.setStartY(centerY+height/2);
+            line1.setEndY(centerY+height/2);
+            line2.setStartY(centerY+height/2);
+            line2.setEndY(centerY-height/2);
+            line3.setStartY(centerY-height/2);
+            line3.setEndY(centerY-height/2);
+            line4.setStartY(centerY-height/2);
+            line4.setEndY(centerY+height/2);
+            g.getChildren().addAll(line1,line2,line3,line4);
+        }
+        @Override
+        public void refresh(){
+        }
+        public void color(Color c){
+        }
+        public void rotate(double x){
+        }
+        public void scale(double x){
+        }
     }
 //    public class Triangle extends Shape{
 //        private double ax=0;
@@ -102,11 +141,17 @@ public class ProjectMain extends Application {
 //        
 //    }
 //    public Triangle baboon;
+    public Quad baboon;
     @Override
     public void start(Stage primaryStage) {
         Button zoomIn = new Button("+"); //init
         Button zoomOut = new Button("-");
         Group r = new Group();
+        Double length = 300.0;
+        Double height = 300.0;
+        Double centerX = 500.0;
+        Double centerY = 500.0;
+        Quad baboon = new Quad(r, length, height, centerX, centerY);
 //        Triangle baboon = new Triangle(r, -100.0, -100.0, 100.0, -100.0, 0, 100);
         primaryStage.setTitle("Main");
         r.getChildren().addAll(zoomIn, zoomOut);
