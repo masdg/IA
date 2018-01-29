@@ -26,6 +26,13 @@ import java.awt.event.*;
  * @author andrewliu
  */
 public class ProjectMain extends Application {
+    Double[][] base = {
+        {1.,0.,0.,0.},
+        {0.,1.,0.,0.},
+        {0.,0.,1.,0.},
+        {0.,0.,0.,1.}
+    };
+    
     double rotateX = 0;
     double rotateY = 0.;
     double xSize = 1000;
@@ -43,55 +50,15 @@ public class ProjectMain extends Application {
         public abstract void refresh();
     }
     public class Quad extends Shape{
-        private Double length = 0.;
-        private Double height = 0.;
-        private Double centerX = 0.;
-        private Double centerY = 0.;
-        Line line1 = new Line();
-        Line line2 = new Line();
-        Line line3 = new Line();
-        Line line4 = new Line();
+        private Double[][] points;
+
+        public Quad() {
+            this.points = new Double[][]{{0.}, {0.}, {0.}, {1.}};
+        }
         public Quad(Group g, Double lengthh, Double heightt, Double centerXX, Double centerYY){
-            length = lengthh;
-            height = heightt;
-            centerX = centerXX;
-            centerY = centerYY;
-            line1.setEndX(centerX+Math.sin(rotateX)*length/2);
-            line1.setStartX(centerX-Math.sin(rotateX)*length/2);
-            line2.setStartX(centerX+Math.sin(rotateX)*length/2);
-            line2.setEndX(centerX+Math.sin(rotateX)*length/2);
-            line3.setStartX(centerX+Math.sin(rotateX)*length/2);
-            line3.setEndX(centerX-Math.sin(rotateX)*length/2);
-            line4.setStartX(centerX-Math.sin(rotateX)*length/2);
-            line4.setEndX(centerX-Math.sin(rotateX)*length/2);
-            line1.setStartY(centerY+Math.sin(rotateY)*height/2);
-            line1.setEndY(centerY+Math.sin(rotateY)*height/2);
-            line2.setStartY(centerY+Math.sin(rotateY)*height/2);
-            line2.setEndY(centerY-Math.sin(rotateY)*height/2);
-            line3.setStartY(centerY-Math.sin(rotateY)*height/2);
-            line3.setEndY(centerY-Math.sin(rotateY)*height/2);
-            line4.setStartY(centerY-Math.sin(rotateY)*height/2);
-            line4.setEndY(centerY+Math.sin(rotateY)*height/2);
-            g.getChildren().addAll(line1,line2,line3,line4);
         }
         @Override
         public void refresh(){
-            line1.setEndX(centerX+Math.sin(rotateX)*length/2);
-            line1.setStartX(centerX-Math.sin(rotateX)*length/2);
-            line2.setStartX(centerX+Math.sin(rotateX)*length/2);
-            line2.setEndX(centerX+Math.sin(rotateX)*length/2);
-            line3.setStartX(centerX+Math.sin(rotateX)*length/2);
-            line3.setEndX(centerX-Math.sin(rotateX)*length/2);
-            line4.setStartX(centerX-Math.sin(rotateX)*length/2);
-            line4.setEndX(centerX-Math.sin(rotateX)*length/2);
-            line1.setStartY(centerY+Math.sin(rotateY)*height/2);
-            line1.setEndY(centerY+Math.sin(rotateY)*height/2);
-            line2.setStartY(centerY+Math.sin(rotateY)*height/2);
-            line2.setEndY(centerY-Math.sin(rotateY)*height/2);
-            line3.setStartY(centerY-Math.sin(rotateY)*height/2);
-            line3.setEndY(centerY-Math.sin(rotateY)*height/2);
-            line4.setStartY(centerY-Math.sin(rotateY)*height/2);
-            line4.setEndY(centerY+Math.sin(rotateY)*height/2);
         }
         public void color(Color c){
         }
@@ -100,73 +67,6 @@ public class ProjectMain extends Application {
         public void scale(double x){
         }
     }
-//    public class Triangle extends Shape{
-//        private double ax=0;
-//        private double ay=0;
-//        private double bx=0;
-//        private double by=0;
-//        private double cx=0;
-//        private double cy=0;
-//        private double scaleF=1;
-//        private Line line1 = new Line();
-//        private Line line2 = new Line();
-//        private Line line3 = new Line();
-//        public Triangle(Group g, double aax, double aay, double bbx, double bby, double ccx, double ccy){
-//            ax = aax;
-//            ay = aay;
-//            bx = bbx;
-//            by = bby;
-//            cx = ccx;
-//            cy = ccy;
-//            line1.setStartX(ax*scaleF+xSize/2);
-//            line1.setStartY(ay*scaleF+ySize/2);
-//            line1.setEndX(bx*scaleF+xSize/2);
-//            line1.setEndY(by*scaleF+ySize/2);
-//            line2.setStartX(bx*scaleF+xSize/2);
-//            line2.setStartY(by*scaleF+ySize/2);
-//            line2.setEndX(cx*scaleF+xSize/2);
-//            line2.setEndY(cy*scaleF+ySize/2);
-//            line3.setStartX(cx*scaleF+xSize/2);
-//            line3.setStartY(cy*scaleF+ySize/2);
-//            line3.setEndX(ax*scaleF+xSize/2);
-//            line3.setEndY(ay*scaleF+ySize/2);
-//            g.getChildren().add(line1);
-//            g.getChildren().add(line2);
-//            g.getChildren().add(line3);
-//        }
-//        @Override
-//        public void scale(double scalebale) {
-//            scaleF = scalebale;
-//        }
-//
-//        @Override
-//        public void rotate(double x) {
-//            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//        }
-//
-//        @Override
-//        public void color(Color c) {
-//            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//        }
-//
-//        @Override
-//        public void refresh() {
-//            line1.setStartX(ax*scaleF+xSize/2);
-//            line1.setStartY(ay*scaleF+ySize/2);
-//            line1.setEndX(bx*scaleF+xSize/2);
-//            line1.setEndY(by*scaleF+ySize/2);
-//            line2.setStartX(bx*scaleF+xSize/2);
-//            line2.setStartY(by*scaleF+ySize/2);
-//            line2.setEndX(cx*scaleF+xSize/2);
-//            line2.setEndY(cy*scaleF+ySize/2);
-//            line3.setStartX(cx*scaleF+xSize/2);
-//            line3.setStartY(cy*scaleF+ySize/2);
-//            line3.setEndX(ax*scaleF+xSize/2);
-//            line3.setEndY(ay*scaleF+ySize/2);
-//        }
-//        
-//    }
-//    public Triangle baboon;
     public Quad baboon;
     @Override
     public void start(Stage primaryStage) {

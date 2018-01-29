@@ -11,7 +11,7 @@ import com.sun.j3d.utils.image.TextureLoader;
 import com.sun.j3d.utils.pickfast.PickCanvas;
 import com.sun.j3d.utils.universe.*;
 
-public class ProjecMain extends Applet implements MouseListener, MouseMotionListener {
+public class ProjecMain extends Applet implements MouseListener, MouseMotionListener,KeyListener,MouseWheelListener {
 	 
 	private static final long serialVersionUID = 1L;
 	private MainFrame frame;
@@ -30,10 +30,15 @@ public class ProjecMain extends Applet implements MouseListener, MouseMotionList
 	private int lastX=-1;
 	private int lastY=-1;
 	private int mouseButton = 0;
-	private TransformGroup boxTransformGroup;
+	private TransformGroup boxTransformGroup = new TransformGroup();
+    Transform3D tran = new Transform3D();
+    private float viewX=0.0f;
+    private float viewY=0.0f;
+    private float viewZ=0.0f;
+    int bab = 1;
 	
 	public static void main(String[] args) {
-              System.setProperty("sun.awt.noerasebackground", "true");
+        System.setProperty("sun.awt.noerasebackground", "false");
 		ProjecMain object = new ProjecMain();		 
 		object.frame = new MainFrame(object, args, object.imageWidth, object.imageHeight);
 		object.validate();
@@ -55,7 +60,7 @@ public class ProjecMain extends Applet implements MouseListener, MouseMotionList
 		Vector3d direction = new Vector3d(eyePos);
 		direction.sub(mousePos);
 		// three points on the plane
-		Point3d p1 = new Point3d(.2, -.5, .8);
+		Point3d p1 = new Point3d(.5, -.5, .5);
 		Point3d p2 = new Point3d(.5, .5, .5);
 		Point3d p3 = new Point3d(-.5, .5, .5);
 		Transform3D currentTransform = new Transform3D();
@@ -113,27 +118,40 @@ public class ProjecMain extends Applet implements MouseListener, MouseMotionList
 		pickCanvas.setMode(PickInfo.PICK_BOUNDS);
 		canvas.addMouseMotionListener(this);
 		canvas.addMouseListener(this);
+        canvas.addKeyListener(this);
+        canvas.addMouseWheelListener(this);
 	}
 	public void getScene() {
+		boxTransformGroup
+				.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
+		boxTransformGroup
+				.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
+//user viewpoint here
+        tran.lookAt(new Point3d(0+viewX,0+viewY,2+viewZ),new Point3d(0+viewX,0+viewY,0+viewZ),new Vector3d(0+viewX,1+viewY,0+viewZ));
+        tran.invert();
 		addLights(group);
+//appearance
 		Appearance ap = getAppearance(new Color3f(Color.blue));
 		ap.setCapability(Appearance.ALLOW_TEXTURE_WRITE);
 		ap.setCapability(Appearance.ALLOW_TEXGEN_WRITE);
-		box = new Box(.5f, .5f, .5f, Primitive.GENERATE_TEXTURE_COORDS,
-				getAppearance(new Color3f(Color.green)));		 
+//create new box
+		box = new Box(.2f, .2f, .2f, Primitive.GENERATE_TEXTURE_COORDS,
+				getAppearance(new Color3f(Color.green)));	
+        
 		box.setCapability(Box.ENABLE_APPEARANCE_MODIFY);
 		box.setCapability(Box.GEOMETRY_NOT_SHARED);		
 		box.setCapability(Box.ALLOW_LOCAL_TO_VWORLD_READ);
 		frontShape = box.getShape(Box.FRONT);
 		frontShape.setAppearance(ap);
 		
-		 
+//box textures
 		box.getShape(Box.TOP).setAppearance(getAppearance(Color.magenta));
 		box.getShape(Box.BOTTOM).setAppearance(getAppearance(Color.orange)); ;
 		box.getShape(Box.RIGHT).setAppearance(getAppearance(Color.red));
 		box.getShape(Box.LEFT).setAppearance(getAppearance(Color.green)); 
-		box.getShape(Box.BACK).setAppearance(getAppearance(new Color3f(Color.yellow))); ;
+		box.getShape(Box.BACK).setAppearance(getAppearance(new Color3f(Color.yellow))); 
 		
+//init texture on cube + mousebehavior
 		frontImage = new BufferedImage(imageWidth, imageHeight,
 				BufferedImage.TYPE_INT_RGB);
 		Graphics2D g = (Graphics2D)frontImage.getGraphics();
@@ -142,12 +160,7 @@ public class ProjecMain extends Applet implements MouseListener, MouseMotionList
 		addTexture(frontImage, frontShape);	
 		MouseRotate behavior = new MouseRotate();
 	    BoundingSphere bounds =
-	        new BoundingSphere(new Point3d(0.0,0.0,50.0), 50.0);	    
-	    boxTransformGroup = new TransformGroup();
-		boxTransformGroup
-				.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
-		boxTransformGroup
-				.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
+	        new BoundingSphere(new Point3d(0.0,0.0,0.0), 50.0);	    
 		behavior.setTransformGroup(boxTransformGroup);
 		boxTransformGroup.addChild(behavior);
 
@@ -155,7 +168,21 @@ public class ProjecMain extends Applet implements MouseListener, MouseMotionList
 		behavior.setSchedulingBounds(bounds);	
 		boxTransformGroup.addChild(box);
 		group.addChild(boxTransformGroup);
-		
+//transformation on cube
+        Transform3D sas = new Transform3D();
+//        sas.set( new Vector3d(1.0f, .0f, -10.0f) );
+		boxTransformGroup = universe.getViewingPlatform().getViewPlatformTransform();
+ //       boxTransformGroup.setTransform(sas);
+        universe.getViewingPlatform().setNominalViewingTransform();
+
+		ViewPlatform myPlatform = new ViewPlatform();
+//		tran.set(new Vector3d((5), (-3), (-33)));
+
+		boxTransformGroup.setTransform(tran);
+
+//		boxTransformGroup.addChild(myPlatform);
+        
+        
 	}
 	public void addTexture(BufferedImage image, Shape3D shape) {
 		frontShape.setCapability(Shape3D.ALLOW_APPEARANCE_WRITE);
@@ -202,12 +229,11 @@ public class ProjecMain extends Applet implements MouseListener, MouseMotionList
 	}
 	
 	public void positionViewer() {
-		ViewingPlatform vp = universe.getViewingPlatform();
-		TransformGroup tg1 = vp.getViewPlatformTransform();
-		Transform3D t3d = new Transform3D();
-		tg1.getTransform(t3d);
-		vp.setNominalViewingTransform();
-
+//		ViewingPlatform vp = universe.getViewingPlatform();
+//		TransformGroup tg1 = vp.getViewPlatformTransform();
+//		Transform3D t3d = new Transform3D();
+//		tg1.getTransform(t3d);
+//		vp.setNominalViewingTransform();
 	}
 	
 	public static void addLights(BranchGroup group) {
@@ -259,6 +285,7 @@ public class ProjecMain extends Applet implements MouseListener, MouseMotionList
 
 	@Override
 	public void mousePressed(MouseEvent event) {
+        System.out.println("mouseheld");
 		lastX=-1;
 		lastY=-1;
 		mouseButton = event.getButton();
@@ -270,6 +297,7 @@ public class ProjecMain extends Applet implements MouseListener, MouseMotionList
 
 	@Override
 	public void mouseDragged(MouseEvent event) {		
+         System.out.println("mouseheld");
 		 if (mouseButton==MouseEvent.BUTTON1) return;
 		 Point3d  intersectionPoint = getPosition(event);
 		 if (Math.abs(intersectionPoint.x) < 0.5 && Math.abs(intersectionPoint.y) < 0.5)  {
@@ -289,12 +317,61 @@ public class ProjecMain extends Applet implements MouseListener, MouseMotionList
 			 lastY = iY;
              changeTexture(texture, frontImage, frontShape);
 		 }	
+
 	}
 	
     
-
+    @Override
+    public void keyPressed(KeyEvent e) {
+        int keyCode = e.getKeyCode();
+        System.out.println(viewX + "," + viewY + "," + viewZ);
+        switch( keyCode ) { 
+            case KeyEvent.VK_UP:
+                viewY+=0.1f;
+                
+                break;
+            case KeyEvent.VK_DOWN:
+                viewY-=0.1f;
+                break;
+            case KeyEvent.VK_LEFT:
+                viewX-=0.1f;
+                break;
+            case KeyEvent.VK_RIGHT :
+                viewX+=0.1f;
+                break;
+         }
+        tran.lookAt(new Point3d(0+viewX,0+viewY,2+viewZ),new Point3d(viewX,viewY,viewZ),new Vector3d(0+viewX,2+viewY,0+viewZ));	 
+		appearance = frontShape.getAppearance();
+             changeTexture(texture, frontImage, frontShape);
+        boxTransformGroup.setTransform(tran);
+		boxTransformGroup = universe.getViewingPlatform().getViewPlatformTransform();
+        universe.getViewingPlatform().setNominalViewingTransform();
+    } 
+    @Override
+    public void keyTyped(KeyEvent e){
+ //nothing here
+    }
+    @Override
+    public void keyReleased(KeyEvent e){
+    }
 	@Override
 	public void mouseMoved(MouseEvent arg0) {	
 	}
+    @Override
+    public void mouseWheelMoved(MouseWheelEvent e) {
+        System.out.println("scrollbo");
+       int notches = e.getWheelRotation();
+       if (notches < 0) {
+           viewZ+=0.1f;
+       } else {
+           viewZ-=0.1f;
+       }
+       tran.lookAt(new Point3d(0+viewX,0+viewY,2+viewZ),new Point3d(viewX,viewY,viewZ),new Vector3d(0+viewX,2+viewY,0+viewZ));	 
+        boxTransformGroup.setTransform(tran);
+             changeTexture(texture, frontImage, frontShape);
+		boxTransformGroup = universe.getViewingPlatform().getViewPlatformTransform();
+        universe.getViewingPlatform().setNominalViewingTransform();
+		appearance = frontShape.getAppearance();
+    }
 }
 
