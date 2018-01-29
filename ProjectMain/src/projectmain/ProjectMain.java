@@ -51,11 +51,25 @@ public class ProjectMain extends Application {
     }
     public class Quad extends Shape{
         private Double[][] points;
+        private Double[][] points2;
+        private Double[][] points3;
+        private Double[][] points4;
+        private Double[][] points5;
+        private Double[][] points6;
+        private Double[][] points7;
+        private Double[][] points8;
 
         public Quad() {
             this.points = new Double[][]{{0.}, {0.}, {0.}, {1.}};
+            this.points2 = new Double[][]{{0.}, {0.}, {0.}, {1.}};
+            this.points3 = new Double[][]{{0.}, {0.}, {0.}, {1.}};
+            this.points4 = new Double[][]{{0.}, {0.}, {0.}, {1.}};
+            this.points5 = new Double[][]{{0.}, {0.}, {0.}, {1.}};
+            this.points6 = new Double[][]{{0.}, {0.}, {0.}, {1.}};
+            this.points7 = new Double[][]{{0.}, {0.}, {0.}, {1.}};
+            this.points8 = new Double[][]{{0.}, {0.}, {0.}, {1.}};
         }
-        public Quad(Group g, Double lengthh, Double heightt, Double centerXX, Double centerYY){
+        public Quad(Group g, Double lengthh, Double heightt, Double widthh, Double centerXX, Double centerYY, Double centerZZ){
         }
         @Override
         public void refresh(){
@@ -74,9 +88,11 @@ public class ProjectMain extends Application {
         Button zoomOut = new Button("-");
         Double length = 300.0;
         Double height = 300.0;
-        Double centerX = 500.0;
-        Double centerY = 500.0;
-        Quad baboon = new Quad(r, length, height, centerX, centerY);
+        Double width = 200.;
+        Double centerX = 0.;
+        Double centerY = 0.;
+        Double centerZ = 0.;
+        Quad baboon = new Quad(r, length, height, width, centerX, centerY, centerZ);
 //        Triangle baboon = new Triangle(r, -100.0, -100.0, 100.0, -100.0, 0, 100);
         primaryStage.setTitle("Main");
         r.getChildren().addAll(zoomIn, zoomOut);

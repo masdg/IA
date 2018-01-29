@@ -2,6 +2,9 @@ import java.applet.Applet;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.SwingUtilities.*;
 import javax.media.j3d.*;
 import javax.vecmath.*;
 import com.sun.j3d.utils.applet.MainFrame;
@@ -42,11 +45,30 @@ public class ProjecMain extends Applet implements MouseListener, MouseMotionList
 		ProjecMain object = new ProjecMain();		 
 		object.frame = new MainFrame(object, args, object.imageWidth, object.imageHeight);
 		object.validate();
+        javax.swing.SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                GUI();
+            }
+        });
 	}
 
 	public void init() {
   		startDrawing();
   	}
+
+    private static void GUI(){
+        JFrame frame = new JFrame("Options");
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        
+        JLabel emptyLabel = new JLabel("sweq");
+        emptyLabel.setPreferredSize(new Dimension(175, 100));
+        frame.getContentPane().add(emptyLabel, BorderLayout.CENTER);
+        
+        //Display the window.
+        frame.pack();
+        frame.setLocation(1100,0);
+        frame.setVisible(true);
+    }
 
 	public Point3d getPosition(MouseEvent event) {
 		Point3d eyePos = new Point3d();
@@ -73,7 +95,7 @@ public class ProjecMain extends Applet implements MouseListener, MouseMotionList
 		currentTransform.transform(intersection);
 		return intersection;		
 	}
-	
+
 	/**
 	 * Returns the point where a line crosses a plane  
 	 */
@@ -135,9 +157,8 @@ public class ProjecMain extends Applet implements MouseListener, MouseMotionList
 		ap.setCapability(Appearance.ALLOW_TEXTURE_WRITE);
 		ap.setCapability(Appearance.ALLOW_TEXGEN_WRITE);
 //create new box
-		box = new Box(.2f, .2f, .2f, Primitive.GENERATE_TEXTURE_COORDS,
-				getAppearance(new Color3f(Color.green)));	
-        
+		box = new Box(.2f, .1f, .2f,getAppearance(new Color3f(Color.green)));	
+//, Primitive.GENERATE_TEXTURE_COORDS
 		box.setCapability(Box.ENABLE_APPEARANCE_MODIFY);
 		box.setCapability(Box.GEOMETRY_NOT_SHARED);		
 		box.setCapability(Box.ALLOW_LOCAL_TO_VWORLD_READ);
@@ -340,9 +361,8 @@ public class ProjecMain extends Applet implements MouseListener, MouseMotionList
                 viewX+=0.1f;
                 break;
          }
-        tran.lookAt(new Point3d(0+viewX,0+viewY,2+viewZ),new Point3d(viewX,viewY,viewZ),new Vector3d(0+viewX,2+viewY,0+viewZ));	 
+        tran.lookAt(new Point3d(0+viewX,0+viewY,-1+viewZ),new Point3d(viewX,viewY,viewZ),new Vector3d(0+viewX,-1+viewY,0+viewZ));	 
 		appearance = frontShape.getAppearance();
-             changeTexture(texture, frontImage, frontShape);
         boxTransformGroup.setTransform(tran);
 		boxTransformGroup = universe.getViewingPlatform().getViewPlatformTransform();
         universe.getViewingPlatform().setNominalViewingTransform();
@@ -368,7 +388,6 @@ public class ProjecMain extends Applet implements MouseListener, MouseMotionList
        }
        tran.lookAt(new Point3d(0+viewX,0+viewY,2+viewZ),new Point3d(viewX,viewY,viewZ),new Vector3d(0+viewX,2+viewY,0+viewZ));	 
         boxTransformGroup.setTransform(tran);
-             changeTexture(texture, frontImage, frontShape);
 		boxTransformGroup = universe.getViewingPlatform().getViewPlatformTransform();
         universe.getViewingPlatform().setNominalViewingTransform();
 		appearance = frontShape.getAppearance();
