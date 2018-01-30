@@ -3,7 +3,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
+import javax.swing.JButton;
 import javax.swing.SwingUtilities.*;
 import javax.media.j3d.*;
 import javax.vecmath.*;
@@ -59,10 +59,8 @@ public class ProjecMain extends Applet implements MouseListener, MouseMotionList
     private static void GUI(){
         JFrame frame = new JFrame("Options");
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        
-        JLabel emptyLabel = new JLabel("sweq");
-        emptyLabel.setPreferredSize(new Dimension(175, 100));
-        frame.getContentPane().add(emptyLabel, BorderLayout.CENTER);
+        JButton cubeButt = new JButton("Insert Cube");
+        frame.getContentPane().add(cubeButt, BorderLayout.CENTER);
         
         //Display the window.
         frame.pack();
@@ -363,9 +361,9 @@ public class ProjecMain extends Applet implements MouseListener, MouseMotionList
          }
         tran.lookAt(new Point3d(0+viewX,0+viewY,-1+viewZ),new Point3d(viewX,viewY,viewZ),new Vector3d(0+viewX,-1+viewY,0+viewZ));	 
 		appearance = frontShape.getAppearance();
-        boxTransformGroup.setTransform(tran);
 		boxTransformGroup = universe.getViewingPlatform().getViewPlatformTransform();
         universe.getViewingPlatform().setNominalViewingTransform();
+        boxTransformGroup.setTransform(tran);
     } 
     @Override
     public void keyTyped(KeyEvent e){
@@ -378,6 +376,7 @@ public class ProjecMain extends Applet implements MouseListener, MouseMotionList
 	public void mouseMoved(MouseEvent arg0) {	
 	}
     @Override
+/*
     public void mouseWheelMoved(MouseWheelEvent e) {
         System.out.println("scrollbo");
        int notches = e.getWheelRotation();
@@ -387,10 +386,11 @@ public class ProjecMain extends Applet implements MouseListener, MouseMotionList
            viewZ-=0.1f;
        }
        tran.lookAt(new Point3d(0+viewX,0+viewY,2+viewZ),new Point3d(viewX,viewY,viewZ),new Vector3d(0+viewX,2+viewY,0+viewZ));	 
-        boxTransformGroup.setTransform(tran);
 		boxTransformGroup = universe.getViewingPlatform().getViewPlatformTransform();
         universe.getViewingPlatform().setNominalViewingTransform();
+        boxTransformGroup.setTransform(tran);
 		appearance = frontShape.getAppearance();
     }
+*/
 }
 
