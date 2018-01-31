@@ -14,16 +14,15 @@ import com.sun.j3d.utils.image.TextureLoader;
 import com.sun.j3d.utils.pickfast.PickCanvas;
 import com.sun.j3d.utils.universe.*;
 
-public class ProjecMain extends Applet implements MouseListener, MouseMotionListener,KeyListener,MouseWheelListener {
+public class ProjecMain extends Applet implements MouseListener, MouseMotionListener,KeyListener,MouseWheelListener, ActionListener {
 	 
 	private static final long serialVersionUID = 1L;
 	private MainFrame frame;
-	private Box box;
 	private int imageHeight = 1024;
 	private int imageWidth = 1024;
 	private Canvas3D canvas;
 	private SimpleUniverse universe;
-	private BranchGroup group = new BranchGroup();
+	private static BranchGroup group = new BranchGroup();
 	private PickCanvas pickCanvas;
 	private BufferedImage frontImage;
 	private Shape3D frontShape;
@@ -33,7 +32,7 @@ public class ProjecMain extends Applet implements MouseListener, MouseMotionList
 	private int lastX=-1;
 	private int lastY=-1;
 	private int mouseButton = 0;
-	private TransformGroup boxTransformGroup = new TransformGroup();
+	private static TransformGroup boxTransformGroup = new TransformGroup();
     Transform3D tran = new Transform3D();
     private float viewX=0.0f;
     private float viewY=0.0f;
@@ -57,16 +56,58 @@ public class ProjecMain extends Applet implements MouseListener, MouseMotionList
   	}
 
     private static void GUI(){
+        boxTransformGroup.setCapability(Group.ALLOW_CHILDREN_EXTEND);
         JFrame frame = new JFrame("Options");
+        Container c = frame.getContentPane();
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         JButton cubeButt = new JButton("Insert Cube");
+        cubeButt.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                System.out.println("cube");
+                Box box; 
+                box= new Box(.5f, .5f, .5f,getAppearance(new Color3f(Color.green)));
+		        box.setCapability(Box.ENABLE_APPEARANCE_MODIFY);
+		        box.setCapability(Box.GEOMETRY_NOT_SHARED);		
+		        box.setCapability(Box.ALLOW_LOCAL_TO_VWORLD_READ);
+		        boxTransformGroup.addChild(box);
+            }
+        });
+        JButton rectButt = new JButton("Insert Rectangle");
+        rectButt.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                System.out.println("rect");
+            }
+        });
+        JButton triButt = new JButton("Insert Triangle");
+        triButt.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                System.out.println("tri");
+            }
+        });
+        JButton sphereButt = new JButton("Insert Sphere");
+        sphereButt.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                System.out.println("sphere");
+            }
+        });
+        JButton lineButt = new JButton("Insert Line Segment");
+        lineButt.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                System.out.println("line");
+            }
+        });
         frame.getContentPane().add(cubeButt, BorderLayout.CENTER);
+        frame.getContentPane().add(rectButt, BorderLayout.NORTH);
+        frame.getContentPane().add(lineButt, BorderLayout.SOUTH);
         
         //Display the window.
+        c.setPreferredSize(new Dimension(200,1000));
         frame.pack();
-        frame.setLocation(1100,0);
+        frame.setLocation(1075,0);
         frame.setVisible(true);
     }
+
+    
 
 	public Point3d getPosition(MouseEvent event) {
 		Point3d eyePos = new Point3d();
@@ -84,7 +125,7 @@ public class ProjecMain extends Applet implements MouseListener, MouseMotionList
 		Point3d p2 = new Point3d(.5, .5, .5);
 		Point3d p3 = new Point3d(-.5, .5, .5);
 		Transform3D currentTransform = new Transform3D();
-		box.getLocalToVworld(currentTransform);
+//		box.getLocalToVworld(currentTransform);
 		currentTransform.transform(p1);
 		currentTransform.transform(p2);
 		currentTransform.transform(p3);		
@@ -155,7 +196,8 @@ public class ProjecMain extends Applet implements MouseListener, MouseMotionList
 		ap.setCapability(Appearance.ALLOW_TEXTURE_WRITE);
 		ap.setCapability(Appearance.ALLOW_TEXGEN_WRITE);
 //create new box
-		box = new Box(.2f, .1f, .2f,getAppearance(new Color3f(Color.green)));	
+/*
+		box = new Box(.5f, .5f, .5f,getAppearance(new Color3f(Color.green)));	
 //, Primitive.GENERATE_TEXTURE_COORDS
 		box.setCapability(Box.ENABLE_APPEARANCE_MODIFY);
 		box.setCapability(Box.GEOMETRY_NOT_SHARED);		
@@ -169,6 +211,7 @@ public class ProjecMain extends Applet implements MouseListener, MouseMotionList
 		box.getShape(Box.RIGHT).setAppearance(getAppearance(Color.red));
 		box.getShape(Box.LEFT).setAppearance(getAppearance(Color.green)); 
 		box.getShape(Box.BACK).setAppearance(getAppearance(new Color3f(Color.yellow))); 
+*/
 		
 //init texture on cube + mousebehavior
 		frontImage = new BufferedImage(imageWidth, imageHeight,
@@ -176,7 +219,7 @@ public class ProjecMain extends Applet implements MouseListener, MouseMotionList
 		Graphics2D g = (Graphics2D)frontImage.getGraphics();
 		g.setColor(new Color(70,70,140));
 		g.fillRect(0, 0, imageWidth, imageHeight);
-		addTexture(frontImage, frontShape);	
+//		addTexture(frontImage, frontShape);	
 		MouseRotate behavior = new MouseRotate();
 	    BoundingSphere bounds =
 	        new BoundingSphere(new Point3d(0.0,0.0,0.0), 50.0);	    
@@ -185,7 +228,7 @@ public class ProjecMain extends Applet implements MouseListener, MouseMotionList
 
 		
 		behavior.setSchedulingBounds(bounds);	
-		boxTransformGroup.addChild(box);
+//		boxTransformGroup.addChild(box);
 		group.addChild(boxTransformGroup);
 //transformation on cube
         Transform3D sas = new Transform3D();
@@ -358,6 +401,12 @@ public class ProjecMain extends Applet implements MouseListener, MouseMotionList
             case KeyEvent.VK_RIGHT :
                 viewX+=0.1f;
                 break;
+            case KeyEvent.VK_SHIFT :
+                viewZ+=0.1f;
+                break;
+            case KeyEvent.VK_SPACE :
+                viewZ-=0.1f;
+                break;
          }
         tran.lookAt(new Point3d(0+viewX,0+viewY,-1+viewZ),new Point3d(viewX,viewY,viewZ),new Vector3d(0+viewX,-1+viewY,0+viewZ));	 
 		appearance = frontShape.getAppearance();
@@ -376,8 +425,11 @@ public class ProjecMain extends Applet implements MouseListener, MouseMotionList
 	public void mouseMoved(MouseEvent arg0) {	
 	}
     @Override
-/*
+    public void actionPerformed(ActionEvent e){
+    }
+    @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
+/*
         System.out.println("scrollbo");
        int notches = e.getWheelRotation();
        if (notches < 0) {
@@ -389,8 +441,7 @@ public class ProjecMain extends Applet implements MouseListener, MouseMotionList
 		boxTransformGroup = universe.getViewingPlatform().getViewPlatformTransform();
         universe.getViewingPlatform().setNominalViewingTransform();
         boxTransformGroup.setTransform(tran);
-		appearance = frontShape.getAppearance();
-    }
 */
+    }
 }
 
