@@ -40,6 +40,9 @@ public class ProjecMain extends Applet implements MouseListener, MouseMotionList
     private float viewZ=0.0f;
     int bab = 1;
     
+/**
+ *main method run on startup: init objects and gui
+ */
     public static void main(String[] args) {
         System.setProperty("sun.awt.noerasebackground", "false");
         ProjecMain object = new ProjecMain();         
@@ -53,11 +56,17 @@ public class ProjecMain extends Applet implements MouseListener, MouseMotionList
             }
         });
     }
-
+     
+/**
+ *applet extension runs init
+ */
     public void init() {
           startDrawing();
     }
-
+     
+/**
+ *gui stuff: frame button etc
+ */
     private static void GUI(){
         JFrame frame = new JFrame("Options");
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -71,6 +80,9 @@ public class ProjecMain extends Applet implements MouseListener, MouseMotionList
         frame.setVisible(true);
     }
 
+/**
+ *locate object in virtual universe and return coord
+ */
     public Point3d getPosition(MouseEvent event) {
         Point3d eyePos = new Point3d();
         Point3d mousePos = new Point3d();
@@ -124,7 +136,10 @@ public class ProjecMain extends Applet implements MouseListener, MouseMotionList
         Point3d intersectionPoint = new Point3d(intersection);
         return intersectionPoint;
     }
-    
+     
+/**
+ *visuals and camera init
+ */
     private void startDrawing() { //init visual stuff
         setLayout(new BorderLayout());
         GraphicsConfiguration config = SimpleUniverse
@@ -205,6 +220,10 @@ public class ProjecMain extends Applet implements MouseListener, MouseMotionList
         appearance.setColoringAttributes(ca);
         
         }
+    
+/**
+ *affect textures of cube
+ */
     public void changeTexture(Texture texture, BufferedImage image, Shape3D shape) {
         loader = new TextureLoader(image, "RGB",
                 TextureLoader.ALLOW_NON_POWER_OF_TWO);
@@ -225,6 +244,9 @@ public class ProjecMain extends Applet implements MouseListener, MouseMotionList
         shape.setAppearance(appearance);
     }
         
+/**
+ *find current shape and render
+ */
     BufferedImage getStartingImage(int i, int width, int height) { //find current shape
         BufferedImage image = new BufferedImage(width, height,
                 BufferedImage.TYPE_INT_RGB);
@@ -234,6 +256,9 @@ public class ProjecMain extends Applet implements MouseListener, MouseMotionList
         return image;
     }
     
+/**
+ *add shading and the like
+ */
     public static void addLights(BranchGroup group) { //add lights for shading
         Color3f light1Color = new Color3f(0.7f, 0.8f, 0.8f);
         BoundingSphere bounds = new BoundingSphere(new Point3d(0.0, 0.0, 0.0),
@@ -247,9 +272,17 @@ public class ProjecMain extends Applet implements MouseListener, MouseMotionList
         light2.setInfluencingBounds(bounds);
         group.addChild(light2);
     }
+     
+/**
+ * find color
+ */
     public static Appearance getAppearance(Color color) {
         return getAppearance(new Color3f(color));
     }
+     
+/**
+ *set colors
+ */
     public static Appearance getAppearance(Color3f color) {
         Color3f black = new Color3f(0.0f, 0.0f, 0.0f);
         Color3f white = new Color3f(1.0f, 1.0f, 1.0f);
@@ -282,6 +315,9 @@ public class ProjecMain extends Applet implements MouseListener, MouseMotionList
     public void mouseExited(MouseEvent arg0) {//redundant event
     }
 
+/**
+ *mouseheld checker
+ */
     @Override
     public void mousePressed(MouseEvent event) {
         System.out.println("mouseheld");
@@ -294,6 +330,9 @@ public class ProjecMain extends Applet implements MouseListener, MouseMotionList
     public void mouseReleased(MouseEvent arg0) {    //redundant event    
     }
 
+/**
+ *uses mouseheld checker and lets user rotate
+ */
     @Override
     public void mouseDragged(MouseEvent event) {  //what happens when you click and hold mouse     
          System.out.println("mouseheld");
@@ -319,6 +358,9 @@ public class ProjecMain extends Applet implements MouseListener, MouseMotionList
          }    
     }  
     
+/**
+ *arrowkey input to move viewpoints
+ */
     @Override
     public void keyPressed(KeyEvent e) { //move viewpoint around
         int keyCode = e.getKeyCode();
